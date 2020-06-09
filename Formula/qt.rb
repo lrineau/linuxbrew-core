@@ -7,6 +7,7 @@ class Qt < Formula
   mirror "https://mirrors.dotsrc.org/qtproject/archive/qt/5.14/5.14.2/single/qt-everywhere-src-5.14.2.tar.xz"
   mirror "https://mirrors.ocf.berkeley.edu/qt/archive/qt/5.14/5.14.2/single/qt-everywhere-src-5.14.2.tar.xz"
   sha256 "c6fcd53c744df89e7d3223c02838a33309bd1c291fcb6f9341505fe99f7f19fa"
+  revision 1
 
   head "https://code.qt.io/qt/qt5.git", :branch => "dev", :shallow => false
 
@@ -165,6 +166,46 @@ class Qt < Formula
 end
 
 __END__
+--- a/qt3d/src/core/transforms/vector3d_sse.cpp	2020-03-03 14:10:30.000000000 +0100
++++ b/qt3d/src/core/transforms/vector3d_sse.cpp	2020-06-09 11:12:36.660465360 +0200
+@@ -39,7 +39,7 @@
+
+ #include <private/qsimd_p.h>
+
+-#ifdef __AVX2__
++#if defined(__AVX2__) && defined(QT_COMPILER_SUPPORTS_AVX2)
+ #include "matrix4x4_avx2_p.h"
+ #else
+ #include "matrix4x4_sse_p.h"
+@@ -66,7 +66,7 @@
+     m_xyzw = _mm_mul_ps(v.m_xyzw, _mm_set_ps(0.0f, 1.0f, 1.0f, 1.0f));
+ }
+
+-#ifdef __AVX2__
++#if defined(__AVX2__) && defined(QT_COMPILER_SUPPORTS_AVX2)
+
+ Vector3D_SSE Vector3D_SSE::unproject(const Matrix4x4_AVX2 &modelView, const Matrix4x4_AVX2 &projection, const QRect &viewport) const
+ {
+--- a/qt3d/src/core/transforms/vector3d_sse_p.h	2020-03-03 14:10:30.000000000 +0100
++++ b/qt3d/src/core/transforms/vector3d_sse_p.h	2020-06-09 11:12:30.405425659 +0200
+@@ -178,7 +178,7 @@
+         return ((_mm_movemask_ps(_mm_cmpeq_ps(m_xyzw, _mm_set_ps1(0.0f))) & 0x7) == 0x7);
+     }
+
+-#ifdef __AVX2__
++#if defined(__AVX2__) && defined(QT_COMPILER_SUPPORTS_AVX2)
+     Q_3DCORE_PRIVATE_EXPORT Vector3D_SSE unproject(const Matrix4x4_AVX2 &modelView, const Matrix4x4_AVX2 &projection, const QRect &viewport) const;
+     Q_3DCORE_PRIVATE_EXPORT Vector3D_SSE project(const Matrix4x4_AVX2 &modelView, const Matrix4x4_AVX2 &projection, const QRect &viewport) const;
+ #else
+@@ -348,7 +348,7 @@
+
+     friend class Vector4D_SSE;
+
+-#ifdef __AVX2__
++#if defined(__AVX2__) && defined(QT_COMPILER_SUPPORTS_AVX2)
+     friend class Matrix4x4_AVX2;
+     friend Q_3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(const Vector3D_SSE &vector, const Matrix4x4_AVX2 &matrix);
+     friend Q_3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(const Matrix4x4_AVX2 &matrix, const Vector3D_SSE &vector);
 --- a/qtwebengine/src/buildtools/config/mac_osx.pri
 +++ b/qtwebengine/src/buildtools/config/mac_osx.pri
 @@ -9,6 +9,10 @@
