@@ -14,11 +14,14 @@ class CassandraCppDriver < Formula
   end
 
   depends_on "cmake" => :build
-  depends_on "pkg-config" => :build unless OS.mac?
   depends_on "libuv"
   depends_on "openssl@1.1"
 
   uses_from_macos "zlib"
+
+  on_linux do
+    depends_on "pkg-config" => :build
+  end
 
   def install
     Dir.mkdir "build"

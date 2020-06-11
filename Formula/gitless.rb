@@ -17,9 +17,12 @@ class Gitless < Formula
 
   depends_on "libgit2"
   depends_on "python@3.8"
-  depends_on "pkg-config" => :build unless OS.mac?
 
   uses_from_macos "libffi"
+
+  on_linux do
+    depends_on "pkg-config" => :build
+  end
 
   resource "args" do
     url "https://files.pythonhosted.org/packages/e5/1c/b701b3f4bd8d3667df8342f311b3efaeab86078a840fb826bd204118cc6b/args-0.1.0.tar.gz"

@@ -18,7 +18,10 @@ class Libopendkim < Formula
   depends_on "libtool" => :build
   depends_on "openssl@1.1"
   depends_on "unbound"
-  depends_on "pkg-config" => :build unless OS.mac?
+
+  on_linux do
+    depends_on "pkg-config" => :build
+  end
 
   # Patch for compatibility with OpenSSL 1.1.1
   # https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=223568

@@ -6,21 +6,39 @@ class Mdds < Formula
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "b62a69bbecdd3c731bf16c6fcc3384b2fa67c34295cfa1013914af13620511ef" => :catalina
-    sha256 "b62a69bbecdd3c731bf16c6fcc3384b2fa67c34295cfa1013914af13620511ef" => :mojave
-    sha256 "b62a69bbecdd3c731bf16c6fcc3384b2fa67c34295cfa1013914af13620511ef" => :high_sierra
-    sha256 "38434783a73a02101b11c8d9a06dbd6199d9612fc1d0d96d45c0a93bcb05dfcb" => :x86_64_linux
+    rebuild 2
+    sha256 "c7415479dc1b23ba867eef310cd265d6813ea9523591a2d30670f3ee20a99923" => :catalina
+    sha256 "ccfeb176c14e310b913302c74ba30d5973184662e62060ec8eea0f16c931f607" => :mojave
+    sha256 "ccfeb176c14e310b913302c74ba30d5973184662e62060ec8eea0f16c931f607" => :high_sierra
+    sha256 "c5ca155b9eac026cf0266c322dddd394d1072f032a9e5d71b67f1f7013b198f4" => :x86_64_linux
+  end
+
+  head do
+    url "https://gitlab.com/mdds/mdds.git"
+
+    depends_on "automake" => :build
   end
 
   depends_on "autoconf" => :build
   depends_on "boost"
 
   def install
+    args = %W[
+      --prefix=#{prefix}
+      --disable-openmp
+    ]
+
     # Gets it to work when the CLT is installed
     inreplace "configure.ac", "$CPPFLAGS -I/usr/include -I/usr/local/include",
                               "$CPPFLAGS -I/usr/local/include"
-    system "autoconf"
-    system "./configure", "--prefix=#{prefix}", "--disable-openmp"
+
+    if build.head?
+      system "./autogen.sh", *args
+    else
+      system "autoconf"
+      system "./configure", *args
+    end
+
     system "make", "install"
   end
 

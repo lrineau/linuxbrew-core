@@ -15,11 +15,14 @@ class LiterateGit < Formula
     sha256 "11737a034e1247554453f6919450519892fb560a6ec635031dc267897afc8478" => :x86_64_linux
   end
 
-  depends_on "pkg-config" => :build unless OS.mac?
   depends_on "libgit2"
   depends_on "python@3.8"
 
   uses_from_macos "libffi"
+
+  on_linux do
+    depends_on "pkg-config" => :build
+  end
 
   resource "cached-property" do
     url "https://files.pythonhosted.org/packages/57/8e/0698e10350a57d46b3bcfe8eff1d4181642fd1724073336079cb13c5cf7f/cached-property-1.5.1.tar.gz"

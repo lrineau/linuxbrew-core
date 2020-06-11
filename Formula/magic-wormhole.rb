@@ -18,10 +18,12 @@ class MagicWormhole < Formula
   depends_on "libsodium"
   depends_on "openssl@1.1"
   depends_on "python@3.8"
-  # pkg-config helps setuptools find libffi
-  depends_on "pkg-config" => :build unless OS.mac?
 
   uses_from_macos "libffi"
+
+  on_linux do
+    depends_on "pkg-config" => :build
+  end
 
   resource "attrs" do
     url "https://files.pythonhosted.org/packages/98/c3/2c227e66b5e896e15ccdae2e00bbc69aa46e9a8ce8869cc5fa96310bf612/attrs-19.3.0.tar.gz"

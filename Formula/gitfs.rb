@@ -23,9 +23,12 @@ class Gitfs < Formula
     depends_on "libfuse"
   end
   depends_on "python@3.8"
-  depends_on "pkg-config" => :build unless OS.mac?
 
   uses_from_macos "libffi"
+
+  on_linux do
+    depends_on "pkg-config" => :build
+  end
 
   resource "atomiclong" do
     url "https://files.pythonhosted.org/packages/86/8c/70aea8215c6ab990f2d91e7ec171787a41b7fbc83df32a067ba5d7f3324f/atomiclong-0.1.1.tar.gz"

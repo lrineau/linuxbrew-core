@@ -17,10 +17,13 @@ class Buku < Formula
 
   depends_on "openssl@1.1"
   depends_on "python@3.8"
-  depends_on "pkg-config" => :build unless OS.mac?
 
   uses_from_macos "expect" => :test
   uses_from_macos "libffi"
+
+  on_linux do
+    depends_on "pkg-config" => :build
+  end
 
   resource "beautifulsoup4" do
     url "https://files.pythonhosted.org/packages/3b/e4/7cfc641f11e0eef60123912611a5c9ee7d4638da7325878b695b9ae4bb6f/beautifulsoup4-4.9.0.tar.gz"

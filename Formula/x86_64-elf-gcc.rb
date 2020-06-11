@@ -4,12 +4,12 @@ class X8664ElfGcc < Formula
   url "https://ftp.gnu.org/gnu/gcc/gcc-9.3.0/gcc-9.3.0.tar.xz"
   mirror "https://ftpmirror.gnu.org/gcc/gcc-9.3.0/gcc-9.3.0.tar.xz"
   sha256 "71e197867611f6054aa1119b13a0c0abac12834765fe2d81f35ac57f84f742d1"
+  revision 1
 
   bottle do
-    sha256 "a18c6acf4979f96244584de989ab47791670bc5404e0eca8626708f9e3375702" => :catalina
-    sha256 "0a08de6bb7983d836f619979c84c15d5acbf4df3d83b7affeb11555285addd16" => :mojave
-    sha256 "fce7ea1027a3925c243cd37d5038b915a57293443acf12758bfc00a6399ff0d0" => :high_sierra
-    sha256 "178d53d04e17e8cfc4a2f99897ab0216e03dca4b22790591bc36f9b8f1b04977" => :x86_64_linux
+    sha256 "80fa0ac420b2d2546c1945d76e1862028e8ca6e947749b566366ba06ec13d2e3" => :catalina
+    sha256 "09d040dbcbe9d6a86f38d10608bd3bcf50922fd03d0c4c04c87015528e1d3e73" => :mojave
+    sha256 "fbc05f274baf67649d16a39b77bfaecf971de84863de21c9aa67cf09e808c87a" => :high_sierra
   end
 
   depends_on "gmp"
@@ -20,19 +20,22 @@ class X8664ElfGcc < Formula
   def install
     mkdir "x86_64-elf-gcc-build" do
       system "../configure", "--target=x86_64-elf",
-                             "--enable-targets=all",
-                             "--enable-multilib",
                              "--prefix=#{prefix}",
+                             "--infodir=#{info}/x86_64-elf-gcc",
+                             "--disable-nls",
                              "--without-isl",
-                             "--disable-werror",
                              "--without-headers",
                              "--with-as=#{Formula["x86_64-elf-binutils"].bin}/x86_64-elf-as",
                              "--with-ld=#{Formula["x86_64-elf-binutils"].bin}/x86_64-elf-ld",
-                             "--enable-languages=c,c++"
+                             "--enable-languages=c,c++",
+                             "SED=/usr/bin/sed"
       system "make", "all-gcc"
       system "make", "install-gcc"
       system "make", "all-target-libgcc"
       system "make", "install-target-libgcc"
+
+      # FSF-related man pages may conflict with native gcc
+      (share/"man/man7").rmtree
     end
   end
 
